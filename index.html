@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Hub</title>
+
+    <!-- Highlight.js estilo -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <style>
+        body{
+            background-color: #0d1117;
+            color: white;
+            font-family: Arial, Helvetica, Sans-Serif;
+            padding: 20px;
+        }
+
+        #cardsContainer{
+            margin-top: 20px;
+        }
+
+        pre{
+            background-color: #0d1117;
+            padding: 15px;
+            border-radius: 10px;
+            overflow: auto;
+        }
+
+        .card{
+            background-color: #161b22;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px #00000070;
+        }
+
+        .card h3{
+            margin-bottom: 10px;
+        }
+        
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo{
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .add-btn{
+            background-color: #2563eb;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .search-box input{
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 20px;
+            background: #161b22;
+            color: white;
+        }
+
+        .recent h2{
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .recent span{
+            background: #1f2937;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">💻 Coding Hub</div>
+
+    <label class="add-btn">
+        +
+        <input type="file" id="fileInput" hidden>
+    </label>
+</header>
+
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Search snippets...">
+</div>
+
+<section class="recent">
+    <h2>Recent Uploads <span id="count">0 items</span></h2>
+</section>
+
+<div id="cardsContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<script>
+    const input = document.getElementById("fileInput");
+    const contenedor = document.getElementById("cardsContainer");
+    const count = document.getElementById("count");
+    const searchInput = document.getElementById("searchInput");
+
+    let total = 0;
+    let snippets = [];
+
+    function guardarEnMemoria() {
+        localStorage.setItem("snippets", JSON.stringify(snippets));
+    }
+
+    function crearCard(nombre, codigoTexto){
+        total++;
+        count.textContent = total + " items";
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const titulo = document.createElement("h3");
+        titulo.textContent = nombre;
+
+        const pre = document.createElement("pre");
+        const code = document.createElement("code");
+        code.textContent = codigoTexto;
+
+        pre.appendChild(code);
+
+        card.appendChild(titulo);
+        card.appendChild(pre);
+
+        contenedor.appendChild(card);
+
+        hljs.highlightElement(code);
+    }
+
+    window.onload = function() {
+        const guardados = localStorage.getItem("snippets");
+
+        if(guardados){
+            snippets = JSON.parse(guardados);
+
+            snippets.forEach(function(item){
+                crearCard(item.nombre, item.codigo);
+            });
+        }
+    };
+
+    input.addEventListener("change", function(event) {
+        const archivo = event.target.files[0];
+        const lector = new FileReader();
+
+        lector.onload = function(e) {
+
+            snippets.push({
+                nombre: archivo.name,
+                codigo: e.target.result
+            });
+
+            guardarEnMemoria();
+
+            crearCard(archivo.name, e.target.result);
+        };
+
+        lector.readAsText(archivo);
+    });
+
+    searchInput.addEventListener("input", function() {
+        const texto = searchInput.value.toLowerCase();
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach(function(card) {
+            const titulo = card.querySelector("h3").textContent.toLowerCase();
+
+            if(titulo.includes(texto)){
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

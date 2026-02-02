@@ -1,199 +1,277 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coding Hub</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coding Hub</title>
 
-    <!-- Highlight.js estilo -->
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<link href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css" rel="stylesheet"/>
 
-    <style>
-        body{
-            background-color: #0d1117;
-            color: white;
-            font-family: Arial, Helvetica, Sans-Serif;
-            padding: 20px;
-        }
+<style>
+body{
+  background:#0d1117;
+  color:white;
+  font-family:Arial, Helvetica, sans-serif;
+  padding:20px;
+}
 
-        #cardsContainer{
-            margin-top: 20px;
-        }
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
 
-        pre{
-            background-color: #0d1117;
-            padding: 15px;
-            border-radius: 10px;
-            overflow: auto;
-        }
+.logo{
+  font-size:22px;
+  font-weight:bold;
+}
 
-        .card{
-            background-color: #161b22;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 10px #00000070;
-        }
+.add-btn{
+  background:#2563eb;
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:25px;
+  cursor:pointer;
+}
 
-        .card h3{
-            margin-bottom: 10px;
-        }
-        
-        .header{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .logo{
-            font-size: 22px;
-            font-weight: bold;
-        }
+#searchInput{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-bottom:10px;
+}
 
-        .add-btn{
-            background-color: #2563eb;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 25px;
-            cursor: pointer;
-        }
+#count{
+  margin-bottom:10px;
+  font-size:14px;
+  opacity:0.8;
+}
 
-        .search-box input{
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            margin-bottom: 20px;
-            background: #161b22;
-            color: white;
-        }
+#clearAll{
+  background:#da3633;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-bottom:15px;
+}
 
-        .recent h2{
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
+.card{
+  background:#161b22;
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:20px;
+  box-shadow:0 0 10px #00000070;
+}
 
-        .recent span{
-            background: #1f2937;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            margin-left: 8px;
-        }
-    </style>
+.card-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.lang{
+  font-size:12px;
+  background:#30363d;
+  padding:3px 8px;
+  border-radius:6px;
+  opacity:0.8;
+}
+
+.download-btn{
+  cursor:pointer;
+  font-size:18px;
+  color:#3fb950;
+}
+
+.copy-btn{
+  cursor:pointer;
+  font-size:18px;
+  color:#58a6ff;
+}
+
+.delete-btn{
+  cursor:pointer;
+  font-size:18px;
+  color:#ff4d4d;
+}
+
+pre{
+  background:#0d1117;
+  padding:15px;
+  border-radius:10px;
+  overflow:auto;
+}
+</style>
 </head>
 
 <body>
 
 <header class="header">
-    <div class="logo">💻 Coding Hub</div>
-
-    <label class="add-btn">
-        +
-        <input type="file" id="fileInput" hidden>
-    </label>
+  <div class="logo">💻 Coding Hub</div>
+  <label class="add-btn">
+    +
+    <input type="file" id="fileInput" hidden>
+  </label>
 </header>
 
-<div class="search-box">
-    <input type="text" id="searchInput" placeholder="Search snippets...">
-</div>
-
-<section class="recent">
-    <h2>Recent Uploads <span id="count">0 items</span></h2>
-</section>
+<input type="text" id="searchInput" placeholder="Buscar snippet...">
+<div id="count">0 items</div>
+<button id="clearAll">🗑 Limpiar todo</button>
 
 <div id="cardsContainer"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
 
 <script>
-    const input = document.getElementById("fileInput");
-    const contenedor = document.getElementById("cardsContainer");
-    const count = document.getElementById("count");
-    const searchInput = document.getElementById("searchInput");
+const input = document.getElementById("fileInput");
+const contenedor = document.getElementById("cardsContainer");
+const searchInput = document.getElementById("searchInput");
+const count = document.getElementById("count");
+const clearBtn = document.getElementById("clearAll");
 
-    let total = 0;
-    let snippets = [];
+let total = 0;
 
-    function guardarEnMemoria() {
-        localStorage.setItem("snippets", JSON.stringify(snippets));
-    }
+function detectarLenguaje(nombre){
+    const ext = nombre.split('.').pop().toLowerCase();
+    return ext;
+}
 
-    function crearCard(nombre, codigoTexto){
-        total++;
-        count.textContent = total + " items";
+function guardarEnLocalStorage(){
+    const tarjetas = [];
+    document.querySelectorAll(".card").forEach(card => {
+        const nombre = card.querySelector("h3").textContent;
+        const codigo = card.querySelector("code").textContent;
+        tarjetas.push({nombre, codigo});
+    });
+    localStorage.setItem("snippets", JSON.stringify(tarjetas));
+}
 
-        const card = document.createElement("div");
-        card.className = "card";
+function crearCard(nombre, codigoTexto){
+    total++;
+    count.textContent = total + " items";
 
-        const titulo = document.createElement("h3");
-        titulo.textContent = nombre;
+    const card = document.createElement("div");
+    card.className = "card";
 
-        const pre = document.createElement("pre");
-        const code = document.createElement("code");
-        code.textContent = codigoTexto;
+    const header = document.createElement("div");
+    header.className = "card-header";
 
-        pre.appendChild(code);
+    const titulo = document.createElement("h3");
+    titulo.textContent = nombre;
+    titulo.style.cursor="pointer";
 
-        card.appendChild(titulo);
-        card.appendChild(pre);
+    titulo.onclick = function(){
+        const inputTitulo = document.createElement("input");
+        inputTitulo.value = titulo.textContent;
+        header.replaceChild(inputTitulo, titulo);
+        inputTitulo.focus();
 
-        contenedor.appendChild(card);
+        inputTitulo.onblur = guardarCambio;
+        inputTitulo.onkeypress = function(e){
+            if(e.key==="Enter") guardarCambio();
+        };
 
-        hljs.highlightElement(code);
-    }
-
-    window.onload = function() {
-        const guardados = localStorage.getItem("snippets");
-
-        if(guardados){
-            snippets = JSON.parse(guardados);
-
-            snippets.forEach(function(item){
-                crearCard(item.nombre, item.codigo);
-            });
+        function guardarCambio(){
+            titulo.textContent = inputTitulo.value;
+            header.replaceChild(titulo, inputTitulo);
+            guardarEnLocalStorage();
         }
     };
 
-    input.addEventListener("change", function(event) {
-        const archivo = event.target.files[0];
-        const lector = new FileReader();
+    const lenguaje = document.createElement("span");
+    lenguaje.className = "lang";
+    lenguaje.textContent = detectarLenguaje(nombre);
 
-        lector.onload = function(e) {
+    const descargar = document.createElement("span");
+    descargar.textContent = "📥";
+    descargar.className = "download-btn";
+    descargar.onclick = function(){
+        const blob = new Blob([codigoTexto], {type:"text/plain"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href=url;
+        a.download=titulo.textContent;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
 
-            snippets.push({
-                nombre: archivo.name,
-                codigo: e.target.result
-            });
+    const copiar = document.createElement("span");
+    copiar.textContent = "📋";
+    copiar.className = "copy-btn";
+    copiar.onclick = function(){
+        navigator.clipboard.writeText(codigoTexto);
+        copiar.textContent="✅";
+        setTimeout(()=>copiar.textContent="📋",1000);
+    };
 
-            guardarEnMemoria();
+    const eliminar = document.createElement("span");
+    eliminar.textContent = "❌";
+    eliminar.className = "delete-btn";
+    eliminar.onclick = function(){
+        card.remove();
+        total--;
+        count.textContent = total + " items";
+        guardarEnLocalStorage();
+    };
 
-            crearCard(archivo.name, e.target.result);
-        };
+    header.appendChild(titulo);
+    header.appendChild(lenguaje);
+    header.appendChild(descargar);
+    header.appendChild(copiar);
+    header.appendChild(eliminar);
 
-        lector.readAsText(archivo);
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.className = "language-" + detectarLenguaje(nombre);
+    code.textContent = codigoTexto;
+
+    pre.appendChild(code);
+    card.appendChild(header);
+    card.appendChild(pre);
+    contenedor.appendChild(card);
+
+    Prism.highlightElement(code);
+    guardarEnLocalStorage();
+}
+
+window.onload = function(){
+    const guardados = JSON.parse(localStorage.getItem("snippets")) || [];
+    guardados.forEach(t => crearCard(t.nombre, t.codigo));
+};
+
+input.addEventListener("change", function(event){
+    const archivo = event.target.files[0];
+    const lector = new FileReader();
+    lector.onload = function(e){
+        crearCard(archivo.name, e.target.result);
+    };
+    lector.readAsText(archivo);
+});
+
+searchInput.addEventListener("input", function(){
+    const texto = this.value.toLowerCase();
+    document.querySelectorAll(".card").forEach(card=>{
+        const nombre = card.querySelector("h3").textContent.toLowerCase();
+        card.style.display = nombre.includes(texto) ? "block" : "none";
     });
+});
 
-    searchInput.addEventListener("input", function() {
-        const texto = searchInput.value.toLowerCase();
-        const cards = document.querySelectorAll(".card");
-
-        cards.forEach(function(card) {
-            const titulo = card.querySelector("h3").textContent.toLowerCase();
-
-            if(titulo.includes(texto)){
-                card.style.display = "block";
-            } else {
-                card.style.display = "none";
-            }
-        });
-    });
+clearBtn.onclick = function(){
+    if(confirm("¿Seguro que quieres borrar todos los snippets?")){
+        contenedor.innerHTML="";
+        localStorage.removeItem("snippets");
+        total=0;
+        count.textContent="0 items";
+    }
+};
 </script>
 
 </body>

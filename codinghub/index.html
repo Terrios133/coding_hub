@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coding Hub</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="firebase.js"></script>
+<script src="script.js" defer></script>
+</head>
+
+<body>
+
+<!-- 🔒 MODAL DE BLOQUEO -->
+<div id="loginModal" class="modal">
+  <div class="modal-content">
+    <h2>Debes registrarte o iniciar sesión para ver la página</h2>
+    <div class="modal-buttons">
+      <a href="login.html"><button>Iniciar Sesión</button></a>
+      <a href="register.html"><button>Registrarse</button></a>
+    </div>
+  </div>
+</div>
+
+<header class="header">
+  <div class="logo">💻 Coding Hub</div>
+  <label class="add-btn">
+    +
+    <input type="file" id="fileInput" hidden>
+  </label>
+</header>
+
+<input type="text" id="searchInput" placeholder="Buscar snippet...">
+<div id="count">0 items</div>
+<button id="clearAll">🗑 Limpiar todo</button>
+
+<div id="cardsContainer"></div>
+
+</body>
+</html>

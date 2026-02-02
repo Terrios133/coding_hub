@@ -1,0 +1,147 @@
+body{
+  background:#0d1117;
+  color:white;
+  font-family:Arial, Helvetica, sans-serif;
+  padding:20px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.logo{
+  font-size:22px;
+  font-weight:bold;
+}
+
+.add-btn{
+  background:#2563eb;
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:25px;
+  cursor:pointer;
+}
+
+#searchInput{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  margin-bottom:10px;
+}
+
+#count{
+  margin-bottom:10px;
+  font-size:14px;
+  opacity:0.8;
+}
+
+#clearAll{
+  background:#da3633;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-bottom:15px;
+}
+
+.card{
+  background:#161b22;
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:20px;
+  box-shadow:0 0 10px #00000070;
+}
+
+.card-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.lang{
+  font-size:12px;
+  background:#30363d;
+  padding:3px 8px;
+  border-radius:6px;
+  opacity:0.8;
+}
+
+.download-btn{
+  cursor:pointer;
+  font-size:18px;
+  color:#3fb950;
+}
+
+.copy-btn{
+  cursor:pointer;
+  font-size:18px;
+  color:#58a6ff;
+}
+
+.delete-btn{
+  cursor:pointer;
+  font-size:18px;
+  color:#ff4d4d;
+}
+
+pre{
+  background:#0d1117;
+  padding:15px;
+  border-radius:10px;
+  overflow:auto;
+}
+
+input{
+  padding:8px;
+  border-radius:5px;
+  border:none;
+  width:100%;
+  box-sizing:border-box;
+  margin-bottom:10px;
+}
+
+button{
+  cursor:pointer;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #161b22;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+  max-width: 400px;
+}
+
+.modal-buttons button{
+  margin: 10px;
+  padding: 10px 20px;
+  border:none;
+  border-radius:8px;
+  background:#2563eb;
+  color:white;
+  cursor:pointer;
+}
